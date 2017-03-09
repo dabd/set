@@ -30,7 +30,7 @@ object SetModule {
         ._1)
 
   def isSubset[A](s: Set[A], t: Set[A]): Boolean =
-    s.items.forall { case (e, _) => t.items.contains(e) }
+    s.items.forall { case (e, _) => isMember(e, t) }
 
   def isMember[A](a: A, s: Set[A]): Boolean =
     s.items.contains(a)
