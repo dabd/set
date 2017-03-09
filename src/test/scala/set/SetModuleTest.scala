@@ -41,7 +41,7 @@ class SetModuleTest extends CommonSpec {
       forAll(genSet(), genSet(), genSet()) {
         case (s, t, u) =>
           union(s, intersection(t, u)) shouldBe intersection(union(s, t),
-                                                             union(s, u))
+            union(s, u))
       }
     }
 
@@ -82,7 +82,7 @@ class SetModuleTest extends CommonSpec {
       forAll(genSet(), genSet(), genSet()) {
         case (s, t, u) =>
           intersection(s, union(t, u)) shouldBe union(intersection(s, t),
-                                                      intersection(s, u))
+            intersection(s, u))
       }
     }
 
@@ -104,60 +104,60 @@ class SetModuleTest extends CommonSpec {
 
     "C - (A && B) = (C - A) || (C - B)" in {
       forAll(genSet(), genSet(), genSet()) {
-        case (s, t, u) =>
-          difference(s, intersection(t, u)) shouldBe union(difference(s, t),
-            difference(s, u))
+        case (c, a, b) =>
+          difference(c, intersection(a, b)) shouldBe union(difference(c, a),
+            difference(c, b))
       }
     }
 
     " C - (A || B) = (C - A) && (C - B)" in {
       forAll(genSet(), genSet(), genSet()) {
-        case (s, t, u) =>
-          difference(s, union(t, u)) shouldBe intersection(difference(s, t),
-            difference(s, u))
+        case (c, a, b) =>
+          difference(c, union(a, b)) shouldBe intersection(difference(c, a),
+            difference(c, b))
       }
     }
 
     "C - (B - A) = (C && A) || (C - B)" in {
       forAll(genSet(), genSet(), genSet()) {
-        case (s, t, u) =>
-          difference(s, difference(t, u)) shouldBe union(intersection(s, u),
-            difference(s, t))
+        case (c, b, a) =>
+          difference(c, difference(b, a)) shouldBe union(intersection(c, a),
+            difference(c, b))
       }
     }
 
     "(B - A) && C = (B && C) - A = B && (C - A)" in {
       forAll(genSet(), genSet(), genSet()) {
-        case (s, t, u) =>
-          intersection(difference(s, t), u) shouldBe
-            difference(intersection(s, u), t)
-        //            and be intersection(s, difference(u, t)))
+        case (b, a, c) =>
+          intersection(difference(b, a), c) should
+            (equal(difference(intersection(b, c), a))
+              and equal(intersection(b, difference(c, a))))
 
       }
     }
 
     "(B - A) || C = (B || C) - (A - C)" in {
       forAll(genSet(), genSet(), genSet()) {
-        case (s, t, u) =>
-          union(difference(s, t), u) shouldBe
-            difference(union(s, u), difference(t, u))
+        case (b, a, c) =>
+          union(difference(b, a), c) shouldBe
+            difference(union(b, c), difference(a, c))
       }
     }
 
     "A - A = empty" in {
-      forAll(genSet()) { s =>
-        difference(s, s) shouldBe emptySet
+      forAll(genSet()) { a =>
+        difference(a, a) shouldBe emptySet
       }
     }
 
     "empty - A = empty" in
-      forAll(genSet()) { s =>
-        difference(emptySet, s) shouldBe emptySet
+      forAll(genSet()) { a =>
+        difference(emptySet, a) shouldBe emptySet
       }
 
     "A - empty = A" in {
-      forAll(genSet()) { s =>
-        difference(s, emptySet) shouldBe s
+      forAll(genSet()) { a =>
+        difference(a, emptySet) shouldBe a
       }
     }
 
@@ -177,7 +177,7 @@ class SetModuleTest extends CommonSpec {
 
     "return false for isSubset(S || T, S) when T is not empty" in {
       forAll(genSet(Range(1, 20)),
-             genSet(Range(30, 50)) suchThat (_.items.nonEmpty)) {
+        genSet(Range(30, 50)) suchThat (_.items.nonEmpty)) {
         case (s, t) => isSubset(union(s, t), s) shouldBe false
       }
     }
@@ -210,7 +210,7 @@ class SetModuleTest extends CommonSpec {
     }
 
     "be like scala.collection.immutable.Set contains" in {
-      forAll(genSet(Range(1, 20)), Gen.choose(1, 40))  {
+      forAll(genSet(Range(1, 20)), Gen.choose(1, 40)) {
         case (s, e) => isMember(e, s) shouldBe s.items.keySet.contains(e)
       }
     }
@@ -225,7 +225,7 @@ class SetModuleTest extends CommonSpec {
 
     "return false if two sets are not equal" in {
       forAll(genSet(Range(1, 10)) suchThat (_.items.nonEmpty),
-             genSet(Range(20, 30))) {
+        genSet(Range(20, 30))) {
         case (s, t) => isEqual(s, t) shouldBe false
       }
     }
