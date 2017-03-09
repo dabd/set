@@ -230,7 +230,7 @@ class SetModuleTest extends CommonSpec {
       }
     }
 
-    "be like scala.collection.immutable.Set =" in {
+    "be like scala.collection.immutable.Set ==" in {
       forAll(genSet(), genSet()) {
         case (s, t) => isEqual(s, t) shouldBe s.items.keySet == t.items.keySet
       }
