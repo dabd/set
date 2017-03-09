@@ -13,9 +13,9 @@ object SetModule {
     Set(
       s.items
         .foldLeft((Map(), t.items): (Map[A, Unit], Map[A, Unit])) {
-          case ((result, other), (elem, _)) =>
-            if (other.contains(elem)) (result + (elem -> ()), other)
-            else (result, other)
+          case ((acc, ts), (e, _)) =>
+            if (ts.contains(e)) (acc + (e -> ()), ts)
+            else (acc, ts)
         }
         ._1)
 
@@ -23,14 +23,14 @@ object SetModule {
     Set(
       t.items
         .foldLeft((s.items, s.items): (Map[A, Unit], Map[A, Unit])) {
-          case ((result, set), (elem, _)) =>
-            if (set.contains(elem)) (result - elem, set)
-            else (result, set)
+          case ((acc, ss), (e, _)) =>
+            if (ss.contains(e)) (acc - e, ss)
+            else (acc, ss)
         }
         ._1)
 
   def isSubset[A](s: Set[A], t: Set[A]): Boolean =
-    difference(s, t).items.isEmpty
+    s.items.forall { case (e, _) => t.items.contains(e) }
 
   def isMember[A](a: A, s: Set[A]): Boolean =
     s.items.contains(a)
