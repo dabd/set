@@ -169,22 +169,19 @@ class SetModuleTest extends CommonSpec {
   }
 
   "isSubset" should {
-    "return true for isSubset(S, S || T)" in {
+
+    "the intersection of two sets should be a subset of both sets" in {
       forAll(genSet(), genSet()) {
-        case (s, t) => isSubset(s, union(s, t)) shouldBe true
+        case (s, t) =>
+          isSubset(intersection(s, t), s) shouldBe true
+          isSubset(intersection(s, t), t) shouldBe true
       }
     }
 
-    "return false for isSubset(S || T, S) when T is not empty" in {
-      forAll(genSet(Range(1, 20)),
-        genSet(Range(30, 50)) suchThat (_.items.nonEmpty)) {
-        case (s, t) => isSubset(union(s, t), s) shouldBe false
-      }
-    }
-
-    "return true for isSubset(emptySet, S)" in {
-      forAll(genSet()) { s =>
-        isSubset(emptySet, s) shouldBe true
+    "the difference of two sets should not be a subset of the second set" in {
+      forAll(genSet() suchThat(_.items.nonEmpty), genSet()) {
+        case (s, t) =>
+          isSubset(difference(s, t), t) shouldBe false
       }
     }
 
@@ -197,15 +194,19 @@ class SetModuleTest extends CommonSpec {
   }
 
   "isMember" should {
-    "return true if an element is a member of the set" in {
-      forAll(genSet() suchThat (_.items.nonEmpty)) { s =>
-        isMember(s.items.head._1, s) shouldBe true
+
+    "every member of the intersection of two sets should be a member of both sets" in {
+      forAll(genSet(), genSet()) {
+        case (s, t) =>
+          intersection(s, t).items.forall { case (e, _) => isMember(e, s) } shouldBe true
+          intersection(s, t).items.forall { case (e, _) => isMember(e, t) } shouldBe true
       }
     }
 
-    "return false if an element is not a member of the set" in {
-      forAll(genSet(Range(1, 10))) { s =>
-        isMember(11, s) shouldBe false
+    "every member of the difference between two sets should not be a member of the second set" in {
+      forAll(genSet() suchThat(_.items.nonEmpty), genSet()) {
+        case (s, t) =>
+          difference(s, t).items.forall { case (e, _) => isMember(e, t) } shouldBe false
       }
     }
 
